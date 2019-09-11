@@ -1,4 +1,7 @@
+import 'dart:io';
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 void main() => runApp(new MyApp());
 
@@ -19,6 +22,24 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  File image;
+
+  Future getImageGallery() async {
+    var imageGallery = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      this.image = imageGallery;
+    });
+  }
+
+  Future getImageCamera() async {
+    var imageCamera = await ImagePicker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      this.image = imageCamera;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +50,10 @@ class _MyHomePageState extends State<MyHomePage> {
           child: new Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              new Text("No Image Selected", style: new TextStyle(fontSize: 15)),
+              image == null
+                  ? new Text("No Image Selected",
+                      style: new TextStyle(fontSize: 15))
+                  : Image.file(image),
               new Padding(
                 padding: const EdgeInsets.only(top: 20),
                 child: actionButton(),
@@ -46,11 +70,11 @@ class _MyHomePageState extends State<MyHomePage> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         new FloatingActionButton(
-          onPressed: null,
+          onPressed: getImageGallery,
           child: new Icon(Icons.photo_library),
         ),
         new FloatingActionButton(
-          onPressed: null,
+          onPressed: getImageCamera,
           child: new Icon(Icons.add_a_photo),
         ),
       ],
